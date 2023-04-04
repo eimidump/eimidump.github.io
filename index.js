@@ -1,11 +1,11 @@
 var getWeather = function() {
-    fetch("https://api.openweathermap.org/data/2.5/weather?lat=51.4556&lon=7.0116&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric")
+    fetch("https://api.openweathermap.org/data/2.5/weather?lat=51.5368948&lon=7.2009147&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric")
     .then((response) => response.json())
     .then((data) => writeWeather(data));
 } 
 
 var writeWeather = function(data) {        
-    document.getElementById('location').innerHTML = "Essen | " + Math.round(data.main.temp) + '&deg;';
+    document.getElementById('location').innerHTML = "Herne | " + Math.round(data.main.temp) + '&deg;';
     document.getElementById('feelsLike').innerHTML = "Feels like " + Math.round(data.main.feels_like) + '&deg;';
     //document.getElementById('description').innerHTML = data.weather[0].main;          //weather name
     //document.getElementById('temp').innerHTML = Math.round(data.main.temp) + '&deg;';             //temperature
