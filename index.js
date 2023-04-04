@@ -85,23 +85,23 @@ var getClothing = function(temperature) {
             document.getElementById('clothing').innerHTML = "🥶☔🧥👖🧦🧣🧤🥾👢🍵";
             break;
 
-        case temperature > 0 && temperature < 10:
+        case temperature > 0 && temperature <= 13:
             document.getElementById('clothing').innerHTML = "😖☔🧥👖🧣🧦🥾👢";
             break;
 
-        case temperature >= 10 && temperature <= 15:
+        case temperature > 14 && temperature <= 18:
             document.getElementById('clothing').innerHTML = "😐🧥🥾👢👖🧦";
             break;
 
-        case temperature > 15 && temperature <= 20:
+        case temperature > 19 && temperature <= 24:
             document.getElementById('clothing').innerHTML = "😛👟👕👚👖";
             break;
 
-        case temperature > 20 && temperature <= 24:
+        case temperature > 25 && temperature <= 29:
             document.getElementById('clothing').innerHTML = "🥰🍹🧢👕🩳👗🕶️👒👡🩴";
             break;
             
-        case temperature > 25:
+        case temperature > 30:
             document.getElementById('clothing').innerHTML = "🥵🧢👙👗🎽🤽🏻🌊👒👡🩴⛱️🏊🏻‍♀️";
             break;   
     }
