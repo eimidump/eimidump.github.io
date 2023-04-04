@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="styles.css">
+  <title>KPMG Weather App</title>
+  <script src="index.js"></script>
+</head>
+<body>
+    <img width=30% height: auto id="WeatherIconSource" src="" class="center">
+    
+    <div id="weatherDisplay">
+        <div id="location"></div>
+        <div id="description"></div>
+        <div id="feelsLike"></div>
+        <div id="minTemp"></div>
+        <div id="maxTemp"></div>
+    </div>
+  
+    <script lang="text/javascript">
+    window.onload = getWeather();
+    </script>
+</body>
+</html>
