@@ -1,1 +1,1 @@
-KPMG Weather App
+Weather App for a certain someone :)
