@@ -85,11 +85,11 @@ var getClothing = function(temperature) {
             document.getElementById('clothing').innerHTML = "🥶☔🧥👖🧦🧣🧤🥾👢🍵";
             break;
 
-        case temperature > 0 && temperature <= 10:
+        case temperature > 0 && temperature < 10:
             document.getElementById('clothing').innerHTML = "😖☔🧥👖🧣🧦🥾👢";
             break;
 
-        case temperature > 10 && temperature <= 15:
+        case temperature >= 10 && temperature <= 15:
             document.getElementById('clothing').innerHTML = "😐🧥🥾👢👖🧦";
             break;
 
