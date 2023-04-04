@@ -75,5 +75,34 @@ var writeWeather = function(data) {
     //document.getElementById('temp').innerHTML = Math.round(data.main.temp) + '&deg;';             //temperature
     //document.getElementById('minTemp').innerHTML = Math.round(data.main.temp_min) + '&deg;';          //minimum temp
     //document.getElementById('maxTemp').innerHTML = Math.round(data.main.temp_max) + '&deg;';          //maximum temp
-    document.getElementById('WeatherIconSource').src += weatherHashMap.get(data.weather[0].id);
+    document.getElementById('WeatherIconSource').src = weatherHashMap.get(data.weather[0].id);
+    getClothing(data.main.temp);
+}
+
+var getClothing = function(temperature) {
+    switch(true) {
+        case temperature <= 0:
+            document.getElementById('clothing').innerHTML = "🥶☔🧥👖🧦🧣🧤🥾👢🍵";
+            break;
+
+        case temperature > 0 && temperature <= 10:
+            document.getElementById('clothing').innerHTML = "😖☔🧥👖🧣🧦🥾👢";
+            break;
+
+        case temperature > 10 && temperature <= 15:
+            document.getElementById('clothing').innerHTML = "😐🧥🥾👢👖🧦";
+            break;
+
+        case temperature > 15 && temperature <= 20:
+            document.getElementById('clothing').innerHTML = "😛👟👕👚👖";
+            break;
+
+        case temperature > 20 && temperature <= 24:
+            document.getElementById('clothing').innerHTML = "🥰🍹🧢👕🩳👗🕶️👒👡🩴";
+            break;
+            
+        case temperature > 25:
+            document.getElementById('clothing').innerHTML = "🥵🧢👙👗🎽🤽🏻🌊👒👡🩴⛱️🏊🏻‍♀️";
+            break;   
+    }
 }
