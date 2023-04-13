@@ -88,7 +88,7 @@ const getWeather = function() {
 
 const getMoon = function() {
     var utc = new Date().toJSON().slice(0,10).replace(/-/g,'-');
-    fetch('https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
+    fetch('http://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
     .then((response) => response.json())
     .then((data) => writeMoon(data));
 }
