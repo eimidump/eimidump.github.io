@@ -26,8 +26,7 @@ toggleButton.addEventListener('click', () => {
         document.getElementById('test1').innerHTML = "&nbsp";
         weatherIcon.src = 'https://moon-svg.minung.dev/moon.svg?size=250&theme=ray&rotate=0';
         weatherIcon.setAttribute('viewBox', '0 0 32 32');
-        location.style.fontSize = '40px';
-        clothing.style.display = 'none';
+        clothing.innerHTML = '✨🔭';
         changeIcon();
     }
 });
@@ -40,7 +39,8 @@ function changeIcon() {
 }
 
 const writeMoon = function(data) {
-    location.innerHTML = data.astronomy.astro.moon_phase;
+    location.innerHTML = "Waxing Crescent";
+    //data.astronomy.astro.moon_phase;
     feelsLike.innerHTML = data.astronomy.astro.moon_illumination + '%';
 }
 
@@ -88,7 +88,7 @@ const getWeather = function() {
 
 const getMoon = function() {
     var utc = new Date().toJSON().slice(0,10).replace(/-/g,'-');
-    fetch('http://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
+    fetch('https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
     .then((response) => response.json())
     .then((data) => writeMoon(data));
 }
