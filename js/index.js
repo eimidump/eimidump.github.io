@@ -26,7 +26,7 @@ toggleButton.addEventListener('click', () => {
         document.getElementById('test1').innerHTML = "&nbsp";
         weatherIcon.src = 'https://moon-svg.minung.dev/moon.svg?size=250&theme=ray&rotate=0';
         weatherIcon.setAttribute('viewBox', '0 0 32 32');
-        clothing.innerHTML = '✨🔭';
+        clothing.style.display = 'none';
         changeIcon();
     }
 });
