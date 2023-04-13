@@ -50,6 +50,7 @@ body.dark-theme a {
 }
 
 .btn {
+    margin-top: 10px;
     margin-left: auto;
     margin-right: auto;
     display: flex;
