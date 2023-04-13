@@ -15,7 +15,6 @@ toggleButton.addEventListener('click', () => {
         getWeather();
         document.getElementById('test').style.display = 'none';
         document.getElementById('test1').style.display = 'none';
-        document.getElementById('test2').style.display = 'none';
         clothing.style.display = '';
         changeIcon();
     }
@@ -23,10 +22,8 @@ toggleButton.addEventListener('click', () => {
         getMoon();
         document.getElementById('test').style.display = '';
         document.getElementById('test1').style.display = '';
-        document.getElementById('test2').style.display = '';
         document.getElementById('test').innerHTML = "&nbsp";
         document.getElementById('test1').innerHTML = "&nbsp";
-        document.getElementById('test2').innerHTML = "&nbsp";
         weatherIcon.src = 'https://moon-svg.minung.dev/moon.svg?size=250&theme=ray&rotate=0';
         weatherIcon.setAttribute('viewBox', '0 0 32 32');
         location.style.fontSize = '40px';
