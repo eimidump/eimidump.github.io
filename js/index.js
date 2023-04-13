@@ -6,6 +6,14 @@ const feelsLike =  document.getElementById('feelsLike');
 const clothing = document.getElementById('clothing');
 const weatherIcon =  document.getElementById('WeatherIconSource');
 //thank you dara
+
+let weatherIconReq;
+let locationAndTemp;
+let feelsLikeReq;
+
+let moonName;
+let moonPercentage;
+
 let isToggled = false;
 
 toggleButton.addEventListener('click', () => {
@@ -13,17 +21,17 @@ toggleButton.addEventListener('click', () => {
     
     if (!isToggled) {
         getWeather();
-        document.getElementById('test').style.display = 'none';
-        document.getElementById('test1').style.display = 'none';
+        document.getElementById('placeholder').style.display = 'none';
+        document.getElementById('placeholder1').style.display = 'none';
         clothing.style.display = '';
         changeIcon();
     }
     else {
         getMoon();
-        document.getElementById('test').style.display = '';
-        document.getElementById('test1').style.display = '';
-        document.getElementById('test').innerHTML = "&nbsp";
-        document.getElementById('test1').innerHTML = "&nbsp";
+        document.getElementById('placeholder').style.display = '';
+        document.getElementById('placeholder1').style.display = '';
+        document.getElementById('placeholder').innerHTML = "&nbsp";
+        document.getElementById('placeholder1').innerHTML = "&nbsp";
         weatherIcon.src = 'https://moon-svg.minung.dev/moon.svg?size=250&theme=ray&rotate=0';
         weatherIcon.setAttribute('viewBox', '0 0 32 32');
         clothing.style.display = 'none';
@@ -32,34 +40,40 @@ toggleButton.addEventListener('click', () => {
 });
 
 function changeIcon() {
-    var button = document.querySelector('#toggleButton');
-    var icon = button.querySelector('i');
+    let button = document.querySelector('#toggleButton');
+    let icon = button.querySelector('i');
     icon.classList.toggle('fa-moon');
     icon.classList.toggle('fa-sun');
 }
 
 const writeMoon = function(data) {
-    location.innerHTML = "Waxing Crescent";
-    //data.astronomy.astro.moon_phase;
-    feelsLike.innerHTML = data.astronomy.astro.moon_illumination + '%';
+    moonName = data.astronomy.astro.moon_phase;
+    moonPercentage = data.astronomy.astro.moon_illumination + '%';
+    
+    location.innerHTML = moonName;
+    feelsLike.innerHTML = moonPercentage;
 }
 
-const writeWeather = function(data) {       
-    weatherIcon.src = weatherHashMap[data.weather[0].id];
-    location.innerHTML = 'Herne | ' + Math.round(data.main.temp) + '&deg;';
-    feelsLike.innerHTML = 'Feels like ' + Math.round(data.main.feels_like) + '&deg;';
-
-    getClothing(data.main.temp);
+const writeWeather = function(data) {
+    weatherIconReq = weatherHashMap[data.weather[0].id];
+    locationAndTemp = 'Herne | ' + Math.round(data.main.temp) + '&deg;';
+    feelsLikeReq = 'Feels like ' + Math.round(data.main.feels_like) + '&deg;';      
+    
+    weatherIcon.src = weatherIconReq;
+    location.innerHTML = locationAndTemp;
+    feelsLike.innerHTML = feelsLikeReq;
+    
+    getClothing(Math.round(data.main.temp));
 }
 
-const getClothing = function(temperature) {
+function getClothing(temperature) {
     switch(true) {
         case temperature <= 0:    
-            clothing.innerHTML = '🥶☔🧥👖🧦🧣🧤🥾👢🍵';
+            clothing.innerHTML = "🥶☔🧥👖🧦🧣🧤🥾👢🍵";
             break;
 
         case temperature > 0 && temperature <= 13:  
-            clothing.innerHTML = '😖☔🧥👖🧣🧦🥾👢';
+            clothing.innerHTML = "😖☔🧥👖🧣🧦🥾👢";
             break;
 
         case temperature > 14 && temperature <= 18: 
@@ -71,7 +85,7 @@ const getClothing = function(temperature) {
             break;
 
         case temperature > 25 && temperature <= 29:
-            EL_CLOclothingTHING.innerHTML = '🥰🍹🧢👕🩳👗🕶️👒👡🩴';
+            clothing.innerHTML = '🥰🍹🧢👕🩳👗🕶️👒👡🩴';
             break;
             
         case temperature > 30:
@@ -87,7 +101,7 @@ const getWeather = function() {
 }
 
 const getMoon = function() {
-    var utc = new Date().toJSON().slice(0,10).replace(/-/g,'-');
+    let utc = new Date().toJSON().slice(0,10).replace(/-/g,'-');
     fetch('https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
     .then((response) => response.json())
     .then((data) => writeMoon(data));
