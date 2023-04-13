@@ -7,6 +7,9 @@ const clothing = document.getElementById('clothing');
 const weatherIcon =  document.getElementById('WeatherIconSource');
 //thank you dara
 
+let weatherResponse;
+let moonResponse;
+
 let weatherIconReq;
 let locationAndTemp;
 let feelsLikeReq;
@@ -20,14 +23,16 @@ toggleButton.addEventListener('click', () => {
     isToggled = !isToggled;
     
     if (!isToggled) {
-        getWeather();
+        if (weatherResponse != 'undefined') { writeWeather(weatherResponse); }
+        else { getWeather(); }
         document.getElementById('placeholder').style.display = 'none';
         document.getElementById('placeholder1').style.display = 'none';
         clothing.style.display = '';
         changeIcon();
     }
     else {
-        getMoon();
+        if (moonResponse != 'undefined') { writeMoon(moonResponse); }
+        else { getMoon(); }
         document.getElementById('placeholder').style.display = '';
         document.getElementById('placeholder1').style.display = '';
         document.getElementById('placeholder').innerHTML = "&nbsp";
@@ -95,17 +100,21 @@ function getClothing(temperature) {
 }
 
 const getWeather = function() {
+    //weather call
     fetch('https://api.openweathermap.org/data/2.5/weather?lat=51.5368948&lon=7.2009147&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric')
     .then((response) => response.json())
-    .then((data) => writeWeather(data));
-}
-
-const getMoon = function() {
+    .then((data) => {
+        weatherResponse = data;
+        console.log("weather response" + weatherResponse);
+        writeWeather(weatherResponse); });
+    //moon call
     let utc = new Date().toJSON().slice(0,10).replace(/-/g,'-');
     fetch('https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
     .then((response) => response.json())
-    .then((data) => writeMoon(data));
-}
+    .then((data) => {
+        moonResponse = data;
+        console.log("moon data" + moonResponse);});
+    }
 
 window.addEventListener('DOMContentLoaded', () => {
     getWeather()
