@@ -67,8 +67,8 @@ const writeWeather = function(data) {
     weatherIcon.src = weatherIconReq;
     location.innerHTML = locationAndTemp;
     feelsLike.innerHTML = feelsLikeReq;
-    
-    getClothing(Math.round(data.main.temp));
+
+    getClothing(data.main.temp);
 }
 
 function getClothing(temperature) {
@@ -77,7 +77,7 @@ function getClothing(temperature) {
             clothing.innerHTML = "🥶☔🧥👖🧦🧣🧤🥾👢🍵";
             break;
 
-        case temperature > 0 && temperature <= 13:  
+        case temperature > 0 && temperature <= 14:  
             clothing.innerHTML = "😖☔🧥👖🧣🧦🥾👢";
             break;
 
@@ -85,15 +85,15 @@ function getClothing(temperature) {
             clothing.innerHTML = '😐🧥🥾👢👖🧦';
             break;
 
-        case temperature > 19 && temperature <= 24:
+        case temperature > 18 && temperature <= 24:
             clothing.innerHTML = '😛👟👕👚👖';
             break;
 
-        case temperature > 25 && temperature <= 29:
+        case temperature > 24 && temperature <= 29:
             clothing.innerHTML = '🥰🍹🧢👕🩳👗🕶️👒👡🩴';
             break;
             
-        case temperature > 30:
+        case temperature > 29:
             clothing.innerHTML = '🥵🧢👙👗🎽🤽🏻🌊👒👡🩴⛱️🏊🏻‍♀️';
             break;   
     }
