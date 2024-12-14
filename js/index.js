@@ -88,7 +88,7 @@ function getClothing(temperature) {
 }
 
 const getWeather = function() {
-    if (!weatherResponse == null) {
+    if (weatherResponse == null) {
         fetch('https://api.openweathermap.org/data/2.5/weather?lat=51.5368948&lon=7.2009147&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric')
         .then((response) => response.json())
         .then((data) => {
