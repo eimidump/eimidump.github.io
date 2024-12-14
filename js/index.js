@@ -15,7 +15,7 @@ toggleButton.addEventListener('click', () => {
     isToggled = !isToggled;
     
     if (!isToggled) {
-        if (weatherResponse) { 
+        if (weatherResponse != null) { 
             writeWeather(weatherResponse); 
         }
         document.getElementById('placeholder').style.display = 'none';
@@ -23,7 +23,7 @@ toggleButton.addEventListener('click', () => {
         clothing.style.display = '';
         changeIcon();
     } else {
-        if (moonResponse) { 
+        if (moonResponse != null) { 
             writeMoon(moonResponse); 
         }
         document.getElementById('placeholder').style.display = '';
@@ -88,7 +88,7 @@ function getClothing(temperature) {
 }
 
 const getWeather = function() {
-    if (!weatherResponse) {
+    if (!weatherResponse == null) {
         fetch('https://api.openweathermap.org/data/2.5/weather?lat=51.5368948&lon=7.2009147&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric')
         .then((response) => response.json())
         .then((data) => {
@@ -98,7 +98,7 @@ const getWeather = function() {
         });
     }
 
-    if (!moonResponse) {
+    if (moonResponse == null) {
         let utc = new Date().toISOString().slice(0, 10);
         fetch('https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
         .then((response) => response.json())
