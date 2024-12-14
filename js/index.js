@@ -1,21 +1,13 @@
 import weatherHashMap from './icons.js'
 
-const toggleButton = document.getElementById('toggleButton')
-const location =  document.getElementById('location');
-const feelsLike =  document.getElementById('feelsLike');
+const toggleButton = document.getElementById('toggleButton');
+const location = document.getElementById('location');
+const feelsLike = document.getElementById('feelsLike');
 const clothing = document.getElementById('clothing');
-const weatherIcon =  document.getElementById('WeatherIconSource');
-//thank you dara
+const weatherIcon = document.getElementById('WeatherIconSource');
 
-let weatherResponse;
-let moonResponse;
-
-let weatherIconReq;
-let locationAndTemp;
-let feelsLikeReq;
-
-let moonName;
-let moonPercentage;
+let weatherResponse = null;
+let moonResponse = null;
 
 let isToggled = false;
 
@@ -23,16 +15,17 @@ toggleButton.addEventListener('click', () => {
     isToggled = !isToggled;
     
     if (!isToggled) {
-        if (weatherResponse != 'undefined') { writeWeather(weatherResponse); }
-        else { getWeather(); }
+        if (weatherResponse) { 
+            writeWeather(weatherResponse); 
+        }
         document.getElementById('placeholder').style.display = 'none';
         document.getElementById('placeholder1').style.display = 'none';
         clothing.style.display = '';
         changeIcon();
-    }
-    else {
-        if (moonResponse != 'undefined') { writeMoon(moonResponse); }
-        else { getMoon(); }
+    } else {
+        if (moonResponse) { 
+            writeMoon(moonResponse); 
+        }
         document.getElementById('placeholder').style.display = '';
         document.getElementById('placeholder1').style.display = '';
         document.getElementById('placeholder').innerHTML = "&nbsp";
@@ -57,7 +50,7 @@ const writeMoon = function(data) {
     
     location.innerHTML = moonName;
     feelsLike.innerHTML = moonPercentage;
-}
+};
 
 const writeWeather = function(data) {
     weatherIconReq = weatherHashMap[data.weather[0].id];
@@ -69,30 +62,25 @@ const writeWeather = function(data) {
     feelsLike.innerHTML = feelsLikeReq;
 
     getClothing(data.main.temp);
-}
+};
 
 function getClothing(temperature) {
-    switch(true) {
+    switch (true) {
         case temperature <= 0:    
             clothing.innerHTML = "🥶☔🧥👖🧦🧣🧤🥾👢🍵";
             break;
-
         case temperature > 0 && temperature <= 14:  
             clothing.innerHTML = "😖☔🧥👖🧣🧦🥾👢";
             break;
-
         case temperature > 14 && temperature <= 18: 
             clothing.innerHTML = '😐🧥🥾👢👖🧦';
             break;
-
         case temperature > 18 && temperature <= 24:
             clothing.innerHTML = '😛👟👕👚👖';
             break;
-
         case temperature > 24 && temperature <= 29:
             clothing.innerHTML = '🥰🍹🧢👕🩳👗🕶️👒👡🩴';
             break;
-            
         case temperature > 29:
             clothing.innerHTML = '🥵🧢👙👗🎽🤽🏻🌊👒👡🩴⛱️🏊🏻‍♀️';
             break;   
@@ -100,22 +88,27 @@ function getClothing(temperature) {
 }
 
 const getWeather = function() {
-    //weather call
-    fetch('https://api.openweathermap.org/data/2.5/weather?lat=51.5368948&lon=7.2009147&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric')
-    .then((response) => response.json())
-    .then((data) => {
-        weatherResponse = data;
-        console.log("weather response" + weatherResponse);
-        writeWeather(weatherResponse); });
-    //moon call
-    let utc = new Date().toJSON().slice(0,10).replace(/-/g,'-');
-    fetch('https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
-    .then((response) => response.json())
-    .then((data) => {
-        moonResponse = data;
-        console.log("moon data" + moonResponse);});
+    if (!weatherResponse) {
+        fetch('https://api.openweathermap.org/data/2.5/weather?lat=51.5368948&lon=7.2009147&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric')
+        .then((response) => response.json())
+        .then((data) => {
+            weatherResponse = data;
+            console.log("Weather response:", weatherResponse);
+            writeWeather(weatherResponse);
+        });
     }
 
+    if (!moonResponse) {
+        let utc = new Date().toISOString().slice(0, 10);
+        fetch('https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
+        .then((response) => response.json())
+        .then((data) => {
+            moonResponse = data;
+            console.log("Moon response:", moonResponse);
+        });
+    }
+};
+
 window.addEventListener('DOMContentLoaded', () => {
-    getWeather()
-})
+    getWeather();
+});
