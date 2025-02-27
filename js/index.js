@@ -62,7 +62,7 @@ const writeMoon = function(data) {
 const writeWeather = function(data) {
     weatherIconReq = weatherHashMap[data.weather[0].id];
     locationAndTemp = 'Herne | ' + Math.round(data.main.temp) + '&deg;';
-    feelsLikeReq = 'Seni seviyorum ve özlüyorum';      
+    feelsLikeReq = 'Feels like ' + Math.round(data.main.feels_like) + '&deg';      
     
     weatherIcon.src = weatherIconReq;
     location.innerHTML = locationAndTemp;
