@@ -1,1 +1,1 @@
-Weather App for a certain someone :)
+Weather App for G :)
