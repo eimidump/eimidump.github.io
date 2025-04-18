@@ -24,3 +24,12 @@ html, body {
     text-align: center;
     margin-top: auto;
 }
+
+.btn2 {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    appearance: none;
+  }

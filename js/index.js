@@ -20,6 +20,10 @@ let moonPercentage;
 
 let isToggled = false;
 
+secret.addEventListener('click', () => {
+    alert("🙈❤️")
+    });
+
 toggleButton.addEventListener('click', () => {
     isToggled = !isToggled;
     
