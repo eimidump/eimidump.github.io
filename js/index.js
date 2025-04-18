@@ -9,6 +9,7 @@ const weatherIcon =  document.getElementById('WeatherIconSource');
 
 let weatherResponse;
 let moonResponse;
+let moonSrc = "https://moon-svg.minung.dev/moon.svg?size=250&theme=ray&rotate=0";
 
 let weatherIconReq;
 let locationAndTemp;
@@ -37,7 +38,7 @@ toggleButton.addEventListener('click', () => {
         document.getElementById('placeholder1').style.display = '';
         document.getElementById('placeholder').innerHTML = "&nbsp";
         document.getElementById('placeholder1').innerHTML = "&nbsp";
-        weatherIcon.src = 'https://moon-svg.minung.dev/moon.svg?size=250&theme=ray&rotate=0';
+        weatherIcon.src = moonSrc;
         weatherIcon.setAttribute('viewBox', '0 0 32 32');
         clothing.style.display = 'none';
         changeIcon();
@@ -105,17 +106,15 @@ const getWeather = function() {
     .then((response) => response.json())
     .then((data) => {
         weatherResponse = data;
-        console.log("weather response" + weatherResponse);
         writeWeather(weatherResponse); });
     //moon call
     let utc = new Date().toJSON().slice(0,10).replace(/-/g,'-');
     fetch('https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=' + utc)
     .then((response) => response.json())
     .then((data) => {
-        moonResponse = data;
-        console.log("moon data" + moonResponse);});
+        moonResponse = data;});
     }
 
 window.addEventListener('DOMContentLoaded', () => {
-    getWeather()
+    getWeather();
 })

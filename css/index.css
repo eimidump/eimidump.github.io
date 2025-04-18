@@ -2,6 +2,25 @@ html, body {
     height: 100vh;
 }
 
+.weather-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+.weather-icon-wrapper {
+    max-width: 800px;  
+    margin: 0 auto;
+  }
+
 #WeatherIconSource {
     max-width: 100%;
+}
+
+.weatherDisplay {
+    text-align: center;
+    margin-top: auto;
 }
