@@ -40,7 +40,7 @@ body.dark-theme a {
 }
 
 #feelsLike {
-    padding: 20px;
+    padding: 10px;
 }
 
 
@@ -64,7 +64,7 @@ body.dark-theme a {
 }
 
 p {
-    padding: 10px;
+    padding: 5px;
 }
 
 .fade-in {
@@ -84,13 +84,14 @@ p {
   }
   
   .main-content {
-    padding: 1rem;
+    padding: 0rem;
     overflow-y: auto;
     flex-grow: 1;
   }
   
   .button-bar {
-    padding: 3rem;
+    padding: 0;
+    margin-bottom: 4rem;
     display: flex;
     flex-direction: column;
     align-items: center;

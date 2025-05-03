@@ -141,6 +141,7 @@ function renderForecast(list) {
     const grouped = {};
     list.forEach(item => {
       const date = item.dt_txt.split(" ")[0];
+      if (Object.keys(grouped).length >= 5) return;
       if (!grouped[date]) grouped[date] = [];
       grouped[date].push(item);
     });
