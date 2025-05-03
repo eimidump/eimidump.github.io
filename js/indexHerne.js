@@ -179,7 +179,7 @@ function renderForecast(list) {
   function translateWeather(main) {
     const map = {
         Rain: 'Regen ☔',
-        Clouds: 'Wolken ☁️',
+        Clouds: 'Wolkies ☁️',
         Clear: 'Klar 😊',
         Snow: 'Schnee ❄️',
         Thunderstorm: 'Gewitter ⛈️',
