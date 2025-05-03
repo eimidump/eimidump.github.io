@@ -27,23 +27,45 @@ secretElement.addEventListener('click', () => {
     window.location.href = '/';
 });
 
-toggleButtonElement.addEventListener('click', () => {
-    isToggled = !isToggled;
-
-    const elementsToAnimate = [locationElement, feelsLikeElement, clothingElement, weatherIconElement, forecastContainerElement, placeholderElement, placeholder1Element];
-    const fadeDuration = 300; // Matches CSS transition
-
-    // 1. Fade out
-    elementsToAnimate.forEach(el => {
+function animateFadeTransition(elements, onMidTransition) {
+    elements.forEach(el => {
+        el.classList.remove('fade-in', 'visible');
         el.classList.add('fade-out');
-        el.classList.remove('fade-in', 'visible'); // Ensure no fade-in classes are active
     });
 
     setTimeout(() => {
-        // 2. Hide after fade out
-        elementsToAnimate.forEach(el => el.classList.add('hidden'));
+        elements.forEach(el => {
+            el.classList.remove('fade-out');
+            el.classList.add('hidden');
+        });
 
-        // 3. Update content
+        onMidTransition();
+
+        requestAnimationFrame(() => {
+            elements.forEach(el => {
+                el.classList.remove('hidden');
+                void el.offsetWidth;
+                el.classList.add('fade-in', 'visible');
+            });
+        });
+    }, 300);
+}
+
+
+toggleButtonElement.addEventListener('click', () => {
+    isToggled = !isToggled;
+
+    const elementsToAnimate = [
+        locationElement,
+        feelsLikeElement,
+        clothingElement,
+        weatherIconElement,
+        forecastContainerElement,
+        placeholderElement,
+        placeholder1Element
+    ];
+
+    animateFadeTransition(elementsToAnimate, () => {
         if (!isToggled) {
             if (weatherData) {
                 updateWeatherUI(weatherData);
@@ -62,8 +84,8 @@ toggleButtonElement.addEventListener('click', () => {
             }
             placeholderElement.style.display = '';
             placeholder1Element.style.display = '';
-            placeholderElement.innerHTML = '&nbsp';
-            placeholder1Element.innerHTML = '&nbsp';
+            placeholderElement.innerHTML = '&nbsp;';
+            placeholder1Element.innerHTML = '&nbsp;';
             weatherIconElement.src = moonIconSource;
             weatherIconElement.setAttribute('viewBox', '0 0 32 32');
             clothingElement.style.display = 'none';
@@ -74,19 +96,11 @@ toggleButtonElement.addEventListener('click', () => {
                 </div>
             `;
         }
-        toggleIcon();
 
-        // 4. Remove hidden and fade in after a small delay
-        setTimeout(() => {
-            elementsToAnimate.forEach(el => {
-                el.classList.remove('hidden', 'fade-out');
-                // Force reflow to trigger the fade-in
-                void el.offsetWidth;
-                el.classList.add('fade-in', 'visible');
-            });
-        }, 50); // Small delay to ensure browser registers the removal of 'hidden'
-    }, fadeDuration);
+        toggleIcon();
+    });
 });
+
 
 function toggleIcon() {
     const icon = toggleButtonElement.querySelector('i');
@@ -196,8 +210,14 @@ function showDayDetail(dayData, day) {
     });
 
     modalBodyElement.innerHTML += `</div>`;
-    forecastModalElement.classList.remove('hidden');
+
+    forecastModalElement.classList.remove('hidden', 'fade-out-modal');
+    forecastModalElement.classList.add('fade-in-modal');
+    requestAnimationFrame(() => {
+        forecastModalElement.classList.add('visible');
+    });
 }
+
 
 function translateWeatherCode(main) {
     const translationMap = {
@@ -265,18 +285,32 @@ const fetchMoonData = async () => {
     }
 };
 
+function hideModalWithAnimation() {
+    forecastModalElement.classList.remove('fade-in-modal', 'visible');
+    forecastModalElement.classList.add('fade-out-modal');
+
+    setTimeout(() => {
+        forecastModalElement.classList.add('hidden');
+        forecastModalElement.classList.remove('fade-out-modal');
+    }, 200);
+}
+
+closeModalButton.onclick = hideModalWithAnimation;
+
+window.onclick = (event) => {
+    if (event.target === forecastModalElement) {
+        hideModalWithAnimation();
+    }
+};
+
+forecastModalElement.addEventListener('touchstart', (event) => {
+    if (event.target === forecastModalElement) {
+        hideModalWithAnimation();
+    }
+});
+
 window.addEventListener('DOMContentLoaded', () => {
     preloadMoonIcon();
     fetchWeatherData();
     fetchMoonData();
 });
-
-closeModalButton.onclick = () => {
-    forecastModalElement.classList.add('hidden');
-};
-
-window.onclick = (event) => {
-    if (event.target === forecastModalElement) {
-        forecastModalElement.classList.add('hidden');
-    }
-};

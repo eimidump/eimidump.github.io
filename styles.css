@@ -71,27 +71,24 @@ p {
     padding: 5px;
 }
 
-.fade-out {
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.fade-out.hidden {
-  opacity: 0;
-}
-
 .fade-in {
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
-.fade-in.visible {
-  opacity: 1;
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .hidden {
-  display: none !important; /* Or just opacity: 0; visibility: hidden; */
+  display: none !important;
 }
+
+.visible {
+  display: block;
+}
+
 
   .weather-screen {
     display: flex;
@@ -221,4 +218,22 @@ p {
     width: 30px;
     height: 30px;
   }
+  
+.fade-in-modal {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-in-modal.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fade-out-modal {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
   
