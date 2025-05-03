@@ -240,6 +240,7 @@ const fetchMoonData = async () => {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
+  weatherIconElement.src = 'placeholder.png';
   preloadMoonIcon();
   fetchWeatherData();
   fetchMoonData();

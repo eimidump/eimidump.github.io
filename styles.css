@@ -26,6 +26,10 @@ body.dark-theme a {
     margin-right: auto;
 }
 
+#WeatherIconSource {
+  background-color: #121212;
+}
+
 #weatherDisplay {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     display: block;
@@ -67,14 +71,27 @@ p {
     padding: 5px;
 }
 
+.fade-out {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-out.hidden {
+  opacity: 0;
+}
+
 .fade-in {
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-  }
-  
-  .fade-in.show {
-    opacity: 1;
-  }
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+}
+
+.hidden {
+  display: none !important; /* Or just opacity: 0; visibility: hidden; */
+}
 
   .weather-screen {
     display: flex;
