@@ -108,6 +108,7 @@ function toggleIcon() {
 }
 
 const updateMoonUI = (data) => {
+    if (!isToggled) return;
     const moonPhase = data.astronomy.astro.moon_phase;
     const moonIllumination = data.astronomy.astro.moon_illumination + '%';
 
@@ -116,6 +117,7 @@ const updateMoonUI = (data) => {
 };
 
 const updateWeatherUI = (data) => {
+    if (isToggled) return;
     const weatherId = data.list[0].weather[0].id;
     const weatherIconSrc = weatherHashMap[weatherId];
     const currentTemp = Math.round(data.list[0].main.temp);
