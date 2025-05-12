@@ -51,6 +51,22 @@ function animateFadeTransition(elements, onMidTransition) {
     }, 300);
 }
 
+function convertTo24Hour(timeStr) {
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':');
+    hours = parseInt(hours, 10);
+
+    if (modifier === 'PM' && hours !== 12) {
+        hours += 12;
+    }
+    if (modifier === 'AM' && hours === 12) {
+        hours = 0;
+    }
+    const hoursStr = hours.toString().padStart(2, '0');
+    const minutesStr = minutes.padStart(2, '0');
+
+    return `${hoursStr}:${minutesStr} Uhr`;
+}
 
 toggleButtonElement.addEventListener('click', () => {
     isToggled = !isToggled;
@@ -89,10 +105,22 @@ toggleButtonElement.addEventListener('click', () => {
             weatherIconElement.src = moonIconSource;
             weatherIconElement.setAttribute('viewBox', '0 0 32 32');
             clothingElement.style.display = 'none';
+            const sunrise = convertTo24Hour(moonData.astronomy.astro.sunrise);
+            const sunset = convertTo24Hour(moonData.astronomy.astro.sunset);
             forecastContainerElement.style.display = '';
             forecastContainerElement.innerHTML = `
                 <div class="moon-info">
                     <div>🌝 <strong>Nächster Vollmond:</strong> ${getNextFullMoon()}</div>
+                    <div style="margin-top: 8px; display: flex; justify-content: center; align-items: center;"">
+                        <span style="margin-right:16px;">
+                        ${sunrise}
+                            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f305.svg" alt="Sunrise" style="width: 1.2em; vertical-align: middle; margin-left: 0.4em;" />
+                        </span>
+                        <span>
+                            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f307.svg" alt="Sunset" style="width: 1.2em; vertical-align: middle; margin-right: 0.4em;" />
+                            ${sunset}
+                        </span>
+                    </div>
                 </div>
             `;
         }
@@ -162,16 +190,24 @@ function renderWeatherForecast(forecastList) {
 
     Object.keys(dailyForecasts).forEach((day) => {
         const entries = dailyForecasts[day];
-        const averageTemperature = Math.round(entries.map((e) => e.main.temp).reduce((a, b) => a + b, 0) / entries.length);
-        const iconCode = entries[0].weather[0].id;
-        const iconUrl = weatherHashMap[iconCode];
+        let maxTemp = 0;
+        let maxIcon = null;
+
+        entries.forEach(entry => {
+        const temp = entry.main.temp;
+        if (temp > maxTemp) {
+            maxTemp = Math.round(temp);
+            maxIcon = entry.weather[0].id;
+        }
+        });
+        const iconUrl = weatherHashMap[maxIcon];
 
         const forecastDayElement = document.createElement('div');
         forecastDayElement.className = 'forecast-day';
         forecastDayElement.innerHTML = `
             <div>${new Date(day).toLocaleDateString('de-DE', { weekday: 'short' })}</div>
             <img src="${iconUrl}" alt="icon">
-            <div>${averageTemperature}°</div>
+            <div>${maxTemp}°</div>
         `;
         forecastDayElement.onclick = () => showDayDetail(entries, day);
         forecastContainerElement.appendChild(forecastDayElement);
@@ -193,7 +229,19 @@ function showDayDetail(dayData, day) {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     const header = new Date(day).toLocaleDateString('de-DE', options);
 
-    modalBodyElement.innerHTML = `<h3>${header}</h3><div class="detail-grid">`;
+    const temps = dayData.map(entry => Math.round(entry.main.temp));
+    const times = dayData.map(entry => entry.dt_txt.split(' ')[1].slice(0, 5));
+    const timesUhr = dayData.map(entry => `${entry.dt_txt.split(' ')[1].slice(0, 2)} Uhr`);
+    const maxTemp = Math.max(...temps);
+
+    let html = `
+        <h3>${header}</h3>
+        <p style="font-size: 16px; margin: 0 0 0; text-align: left;">
+            Heute wird es <b>${maxTemp}°C </b>
+        </p>
+        <canvas id="tempChart" width="300" height="150"></canvas>
+        <div class="detail-grid">
+    `;
 
     dayData.forEach((entry) => {
         const time = entry.dt_txt.split(' ')[1].slice(0, 5);
@@ -201,22 +249,97 @@ function showDayDetail(dayData, day) {
         const description = translateWeatherCode(entry.weather[0].main);
         const iconUrl = `https://openweathermap.org/img/wn/${entry.weather[0].icon}.png`;
 
-        modalBodyElement.innerHTML += `
+        html += `
             <div class="detail-row">
                 <div class="detail-time">${time}</div>
                 <div class="detail-icon"><img src="${iconUrl}" /></div>
                 <div class="detail-temp">${temp}°</div>
                 <div class="detail-desc">${description}</div>
-            </div>`;
+            </div>
+        `;
     });
 
-    modalBodyElement.innerHTML += `</div>`;
+    html += `</div>`;
+
+    modalBodyElement.innerHTML = html;
 
     forecastModalElement.classList.remove('hidden', 'fade-out-modal');
     forecastModalElement.classList.add('fade-in-modal');
     requestAnimationFrame(() => {
         forecastModalElement.classList.add('visible');
     });
+
+    renderTemperatureChart(timesUhr, temps);
+}
+
+function renderTemperatureChart(times, temps) {
+    const maxTemp = Math.max(...temps);
+    const colors = getChartColorsByTemp(maxTemp);
+
+    const ctx = document.getElementById('tempChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: times,
+            datasets: [{
+                label: 'Temperatur (°C)',
+                data: temps,
+                borderColor: colors.borderColor,
+                backgroundColor: colors.backgroundColor,
+                fill: true,
+                tension: 0.3,
+                pointRadius: 2,
+                pointBackgroundColor: colors.pointBackgroundColor
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 4,
+                        callback: function(value) {
+                            const label = this.getLabelForValue(value);
+                            return ['00 Uhr', '06 Uhr', '12 Uhr', '18 Uhr'].includes(label) ? label : '';
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        stepSize: 2,
+                        callback: function(value) {
+                            return value + '°';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function getChartColorsByTemp(maxTemp) {
+    if (maxTemp <= 16) {
+        // Blue for cold
+        return {
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+            pointBackgroundColor: '#007bff'
+        };
+    } else {
+        // Yellow for warm
+        return {
+            borderColor: '#ffcc00',
+            backgroundColor: 'rgba(255, 204, 0, 0.2)',
+            pointBackgroundColor: '#ffcc00'
+        };
+    }
 }
 
 
@@ -255,10 +378,7 @@ function formatDateToGerman(date) {
     const day = date.getDate();
     const month = months[date.getMonth()];
     const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-
-    return `${day}. ${month} ${year} ${hours}:${minutes} Uhr`;
+    return `${day}. ${month} ${year}`;
 }
 
 const fetchWeatherData = async () => {
