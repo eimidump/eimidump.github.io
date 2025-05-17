@@ -12,6 +12,7 @@ const secretElement = document.getElementById('secret');
 const forecastModalElement = document.getElementById('forecastModal');
 const modalBodyElement = document.getElementById('modal-body');
 const closeModalButton = document.querySelector('.close');
+const country = document.getElementById('country');
 
 let weatherData;
 let moonData;
@@ -23,8 +24,12 @@ const preloadMoonIcon = () => {
     img.src = moonIconSource;
 };
 
+country.addEventListener('click', () => {
+    window.location.href = '/';
+});
+
 secretElement.addEventListener('click', () => {
-    window.location.href = '/dus';
+    window.location.href = '/didim';
 });
 
 function animateFadeTransition(elements, onMidTransition) {
@@ -152,7 +157,7 @@ const updateWeatherUI = (data) => {
     const feelsLikeTemp = Math.round(data.list[0].main.feels_like);
 
     weatherIconElement.src = weatherIconSrc;
-    locationElement.innerHTML = `Herne | ${currentTemp}&deg;`;
+    locationElement.innerHTML = `Tokat | ${currentTemp}&deg;`;
     feelsLikeElement.innerHTML = `Gefühlt ${feelsLikeTemp}&deg`;
 
     updateClothingRecommendation(currentTemp);
@@ -160,28 +165,7 @@ const updateWeatherUI = (data) => {
 };
 
 function updateClothingRecommendation(temperature) {
-    switch (true) {
-        case temperature <= 0:
-            clothingElement.innerHTML = '🥶☔🧥👖🧦🧣🧤🥾👢🍵';
-            break;
-        case temperature > 0 && temperature <= 14:
-            clothingElement.innerHTML = '😖☔🧥👖🧣🧦🥾👢';
-            break;
-        case temperature > 14 && temperature <= 18:
-            clothingElement.innerHTML = '😐🧥🥾👢👖🧦';
-            break;
-        case temperature > 18 && temperature <= 24:
-            clothingElement.innerHTML = '😛👟👕👚👖';
-            break;
-        case temperature > 24 && temperature <= 29:
-            clothingElement.innerHTML = '🥰🍹🧢👕🩳👗🕶️👒👡🩴';
-            break;
-        case temperature > 29:
-            clothingElement.innerHTML = '🥵🧢👙👗🎽🤽🏻🌊👒👡🩴⛱️🏊🏻‍♀️';
-            break;
-        default:
-            clothingElement.innerHTML = '';
-    }
+    clothingElement.innerHTML = "🕶️🧴 nicht vergessen"
 }
 
 function renderWeatherForecast(forecastList) {
@@ -332,12 +316,18 @@ function getChartColorsByTemp(maxTemp) {
             backgroundColor: 'rgba(0, 123, 255, 0.2)',
             pointBackgroundColor: '#007bff'
         };
-    } else {
+    } else if (maxTemp > 16 && maxTemp <=26){
         // Yellow for warm
         return {
             borderColor: '#ffcc00',
             backgroundColor: 'rgba(255, 204, 0, 0.2)',
             pointBackgroundColor: '#ffcc00'
+        };
+    } else {
+        return {
+            borderColor: '#cc0000',
+            backgroundColor: 'rgba(255, 51, 0, 0.2)',
+            pointBackgroundColor: '#cc0000'
         };
     }
 }
@@ -384,7 +374,7 @@ function formatDateToGerman(date) {
 const fetchWeatherData = async () => {
     try {
         const weatherResponse = await fetch(
-            'https://api.openweathermap.org/data/2.5/forecast?lat=51.5368948&lon=7.2009147&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric'
+            'https://api.openweathermap.org/data/2.5/forecast?lat=40.31389&lon=36.55444&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric'
         );
         weatherData = await weatherResponse.json();
         updateWeatherUI(weatherData);
@@ -397,7 +387,7 @@ const fetchMoonData = async () => {
     const today = new Date().toJSON().slice(0, 10).replace(/-/g, '-');
     try {
         const moonResponse = await fetch(
-            `https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=${today}`
+            `https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=40.31389,36.55444&dt=${today}`
         );
         moonData = await moonResponse.json();
         updateMoonUI(moonData);

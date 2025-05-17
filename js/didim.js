@@ -12,6 +12,7 @@ const secretElement = document.getElementById('secret');
 const forecastModalElement = document.getElementById('forecastModal');
 const modalBodyElement = document.getElementById('modal-body');
 const closeModalButton = document.querySelector('.close');
+const country = document.getElementById('country');
 
 let weatherData;
 let moonData;
@@ -23,8 +24,12 @@ const preloadMoonIcon = () => {
     img.src = moonIconSource;
 };
 
-secretElement.addEventListener('click', () => {
+country.addEventListener('click', () => {
     window.location.href = '/';
+});
+
+secretElement.addEventListener('click', () => {
+    window.location.href = '/tokat';
 });
 
 function animateFadeTransition(elements, onMidTransition) {
@@ -67,7 +72,6 @@ function convertTo24Hour(timeStr) {
 
     return `${hoursStr}:${minutesStr} Uhr`;
 }
-
 
 toggleButtonElement.addEventListener('click', () => {
     isToggled = !isToggled;
@@ -140,6 +144,7 @@ const updateMoonUI = (data) => {
     if (!isToggled) return;
     const moonPhase = data.astronomy.astro.moon_phase;
     const moonIllumination = data.astronomy.astro.moon_illumination + '%';
+
     locationElement.innerHTML = moonPhase;
     feelsLikeElement.innerHTML = moonIllumination;
 };
@@ -152,7 +157,7 @@ const updateWeatherUI = (data) => {
     const feelsLikeTemp = Math.round(data.list[0].main.feels_like);
 
     weatherIconElement.src = weatherIconSrc;
-    locationElement.innerHTML = `Düsseldorf | ${currentTemp}&deg;`;
+    locationElement.innerHTML = `Didim | ${currentTemp}&deg;`;
     feelsLikeElement.innerHTML = `Gefühlt ${feelsLikeTemp}&deg`;
 
     updateClothingRecommendation(currentTemp);
@@ -160,28 +165,7 @@ const updateWeatherUI = (data) => {
 };
 
 function updateClothingRecommendation(temperature) {
-    switch (true) {
-        case temperature <= 0:
-            clothingElement.innerHTML = '🥶☔🧥👖🧦🧣🧤🥾👢🍵';
-            break;
-        case temperature > 0 && temperature <= 14:
-            clothingElement.innerHTML = '😖☔🧥👖🧣🧦🥾👢';
-            break;
-        case temperature > 14 && temperature <= 18:
-            clothingElement.innerHTML = '😐🧥🥾👢👖🧦';
-            break;
-        case temperature > 18 && temperature <= 24:
-            clothingElement.innerHTML = '😛👟👕👚👖';
-            break;
-        case temperature > 24 && temperature <= 29:
-            clothingElement.innerHTML = '🥰🍹🧢👕🩳👗🕶️👒👡🩴';
-            break;
-        case temperature > 29:
-            clothingElement.innerHTML = '🥵🧢👙👗🎽🤽🏻🌊👒👡🩴⛱️🏊🏻‍♀️';
-            break;
-        default:
-            clothingElement.innerHTML = '';
-    }
+    clothingElement.innerHTML = "🕶️🧴 nicht vergessen"
 }
 
 function renderWeatherForecast(forecastList) {
@@ -192,10 +176,11 @@ function renderWeatherForecast(forecastList) {
         const entries = dailyForecasts[day];
         let maxTemp = 0;
         let maxIcon = null;
+
         entries.forEach(entry => {
         const temp = entry.main.temp;
         if (temp > maxTemp) {
-            maxTemp = Math.ceil(temp);
+            maxTemp = Math.round(temp);
             maxIcon = entry.weather[0].id;
         }
         });
@@ -229,6 +214,7 @@ function showDayDetail(dayData, day) {
     const header = new Date(day).toLocaleDateString('de-DE', options);
 
     const temps = dayData.map(entry => Math.round(entry.main.temp));
+    const times = dayData.map(entry => entry.dt_txt.split(' ')[1].slice(0, 5));
     const timesUhr = dayData.map(entry => `${entry.dt_txt.split(' ')[1].slice(0, 2)} Uhr`);
     const maxTemp = Math.max(...temps);
 
@@ -324,19 +310,28 @@ function renderTemperatureChart(times, temps) {
 
 function getChartColorsByTemp(maxTemp) {
     if (maxTemp <= 16) {
+        // Blue for cold
         return {
             borderColor: '#007bff',
             backgroundColor: 'rgba(0, 123, 255, 0.2)',
             pointBackgroundColor: '#007bff'
         };
-    } else {
+    } else if (maxTemp > 16 && maxTemp <=26){
+        // Yellow for warm
         return {
             borderColor: '#ffcc00',
             backgroundColor: 'rgba(255, 204, 0, 0.2)',
             pointBackgroundColor: '#ffcc00'
         };
+    } else {
+        return {
+            borderColor: '#cc0000',
+            backgroundColor: 'rgba(255, 51, 0, 0.2)',
+            pointBackgroundColor: '#cc0000'
+        };
     }
 }
+
 
 function translateWeatherCode(main) {
     const translationMap = {
@@ -373,14 +368,13 @@ function formatDateToGerman(date) {
     const day = date.getDate();
     const month = months[date.getMonth()];
     const year = date.getFullYear();
-
     return `${day}. ${month} ${year}`;
 }
 
 const fetchWeatherData = async () => {
     try {
         const weatherResponse = await fetch(
-            'https://api.openweathermap.org/data/2.5/forecast?lat=51.22172&lon=6.77616&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric'
+            'https://api.openweathermap.org/data/2.5/forecast?lat=37.3756&lon=27.2678&exclude=minutely,hourly,daily,alerts&appid=80daf6978b24a949df62669da4146061&units=metric'
         );
         weatherData = await weatherResponse.json();
         updateWeatherUI(weatherData);
@@ -393,7 +387,7 @@ const fetchMoonData = async () => {
     const today = new Date().toJSON().slice(0, 10).replace(/-/g, '-');
     try {
         const moonResponse = await fetch(
-            `https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Dusseldorf&dt=${today}`
+            `https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=37.3756,27.267&dt=${today}`
         );
         moonData = await moonResponse.json();
         updateMoonUI(moonData);
