@@ -454,7 +454,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const isJuly20th = today.getDate() === 20 && today.getMonth() === 6;
 
     if (isJuly20th) {
-        const duration = 5000;
+        const duration = 6000;
         const endTime = Date.now() + duration;
 
         const interval = setInterval(() => {
