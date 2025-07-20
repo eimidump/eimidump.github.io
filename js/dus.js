@@ -165,6 +165,11 @@ const updateWeatherUI = (data) => {
 };
 
 function updateClothingRecommendation(temperature) {
+
+    const today = new Date();
+    if (today.getDate() === 20 && today.getMonth() === 6)
+        return clothingElement.innerHTML = 'Iyiki Doğdun Gizem 🥳🎉🎂';
+
     switch (true) {
         case temperature <= 0:
             clothingElement.innerHTML = '🥶☔🧥👖🧦🧣🧤🥾👢🍵';
@@ -443,4 +448,31 @@ window.addEventListener('DOMContentLoaded', () => {
     preloadMoonIcon();
     fetchWeatherData();
     fetchMoonData();
+
+    setTimeout(() => {
+    const today = new Date();
+    const isJuly20th = today.getDate() === 20 && today.getMonth() === 6;
+
+    if (isJuly20th) {
+        const duration = 5000;
+        const endTime = Date.now() + duration;
+
+        const interval = setInterval(() => {
+            if (Date.now() > endTime) {
+                clearInterval(interval);
+                return;
+            }
+            confetti({
+                particleCount: 100,
+                spread: 360,
+                gravity: 0.5,
+                ticks: 200,
+                origin: {
+                    x: Math.random(),
+                    y: Math.random() * 0.5
+                }
+            });
+        }, 300);
+    }
+}, 1500);
 });
