@@ -74,28 +74,25 @@ function convertTo24Hour(timeStr) {
 }
 
 clothingElement.addEventListener('click', () => {
-    const today = new Date();
-    if (today.getDate() === 20 && today.getMonth() === 6){
-        const duration = 6000;
-        const endTime = Date.now() + duration;
+    const duration = 6000;
+    const endTime = Date.now() + duration;
 
-        const interval = setInterval(() => {
-            if (Date.now() > endTime) {
-                clearInterval(interval);
-                return;
+    const interval = setInterval(() => {
+        if (Date.now() > endTime) {
+            clearInterval(interval);
+            return;
+        }
+        confetti({
+            particleCount: 100,
+            spread: 360,
+            gravity: 0.5,
+            ticks: 200,
+            origin: {
+                x: Math.random(),
+                y: Math.random() * 0.5
             }
-            confetti({
-                particleCount: 100,
-                spread: 360,
-                gravity: 0.5,
-                ticks: 200,
-                origin: {
-                    x: Math.random(),
-                    y: Math.random() * 0.5
-                }
-            });
-        }, 300);
-    }
+        });
+    }, 300);
 })
 
 toggleButtonElement.addEventListener('click', () => {
