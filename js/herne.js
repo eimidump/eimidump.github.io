@@ -433,7 +433,7 @@ const fetchMoonData = async () => {
     const today = new Date().toJSON().slice(0, 10).replace(/-/g, '-');
     try {
         const moonResponse = await fetch(
-            `https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=Herne&dt=${today}`
+            `https://api.weatherapi.com/v1/astronomy.json?key=88d21e164d0d49d99a182132231304&q=51.5,7.20&dt=${today}`
         );
         moonData = await moonResponse.json();
         updateMoonUI(moonData);
